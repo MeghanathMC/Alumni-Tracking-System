@@ -27,7 +27,7 @@ const login= async( req,res) => {
        return res.status(401).json({msg:"Username or usn doesnot exist"});
     }
     
-    const isPassword= await bcrypt.compare(password,userexist.password);
+    const isPassword= await usermodel.comparePassword();
     if(isPassword){
         res.status(200).json({msg:"Login successful",
             token:await userexist.generateToken(),
