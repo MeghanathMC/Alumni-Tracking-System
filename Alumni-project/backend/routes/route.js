@@ -3,6 +3,8 @@ const router=express.Router();
 const controller=require('../controller/authcontroller');
 
 
-router.route("/login").post(controller.login);
+router.route("/register").post(controller.register);
+router.route("/login").get(controller.login);
+
 
 module.exports=router;
