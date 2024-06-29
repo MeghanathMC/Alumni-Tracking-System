@@ -27,7 +27,7 @@ const login= async( req,res) => {
        return res.status(401).json({msg:"Username or usn doesnot exist"});
     }
     
-    const isPassword= await usermodel.comparePassword();
+    const isPassword= await usermodel.comparePassword(password);
     if(isPassword){
         res.status(200).json({msg:"Login successful",
             token:await userexist.generateToken(),
