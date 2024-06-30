@@ -5,10 +5,12 @@ const register =async (req,res) =>{
     const {username,firstname,lastname,usn,email,mobilenumber,aadharcard,password} = req.body;
    
     const existingUser = await usermodel.findOne({"usn": usn});
-    if(existingUser){
+    const existingUseremail = await usermodel.findOne({"email": email});
+    if(existingUser || existingUseremail){
         console.error({msg:"User exists"});
         res.status(400).send({msg:"User exists"});
-    }else{
+    }
+    else{
        const usercreated= await usermodel.create({
             username,firstname,lastname,usn,email,mobilenumber,aadharcard,password,
         });
@@ -27,7 +29,7 @@ const login= async( req,res) => {
        return res.status(401).json({msg:"Username or usn doesnot exist"});
     }
     
-    const isPassword= await usermodel.comparePassword(password);
+    const isPassword= await userexist.comparePassword(password);
     if(isPassword){
         res.status(200).json({msg:"Login successful",
             token:await userexist.generateToken(),
