@@ -61,13 +61,13 @@ const sendmail=(username,gmail)=> {
         service:'gmail',
         port: 465,
         auth: {
-          user: "km9100208@gmail.com",
-          pass: "hmpt imak ydiu esmj"
+          user: "alumniconnectweb@gmail.com",
+          pass: "kzjc fpga yfeh sdww"
         }
       });
     
       const mailOptions={
-        from:"km9100208@gmail.com",
+        from:"alumniconnectweb@gmail.co",
         to:`${gmail}`,
         subject:"Successfully registered",
         text:`Dear ${username}, u have registered with alumni website`
