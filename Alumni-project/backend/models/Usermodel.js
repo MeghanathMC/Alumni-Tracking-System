@@ -6,29 +6,22 @@ const userSchema= new mongoose.Schema({
         type:String,
         required:true,
     },
-    firstname:{
-        type:String,
+    batch:{
+        type:mongoose.Schema.Types.ObjectId,
         required:true,
-    },
-    lastname:{
-        type:String,
-        required:true,
+        ref:'batch'
     },
     usn:{
         type:String,
         required:true,
         unique:true,
     },
-    email:{
+    gmail:{
         type:String,
         required:true,
         unique:true,
     },
     mobilenumber:{
-        type:String,
-        required:true,
-    },
-    aadharcard:{
         type:String,
         required:true,
     },
@@ -62,7 +55,7 @@ userSchema.methods.generateToken= async function(){
     return jwt.sign({
       userId:this._id.toString(),
       username:this.username,
-      usn:this.email,
+      usn:this.usn,
       password:this.password
     },
     process.env.JWT_SECRET_KEY,
