@@ -1,6 +1,7 @@
 const mongoose=require('mongoose');
 const bcrypt=require("bcryptjs")
 const jwt= require("jsonwebtoken")
+const validator=require("validator");
 const userSchema= new mongoose.Schema({
     username:{
         type:String,
@@ -27,8 +28,18 @@ const userSchema= new mongoose.Schema({
     },
     password:{
         type:String,
-        required:true,
+        required:[true, 'Please enter a password.'],
+        minlength:8
     },
+    confirmPassword:{
+        type:String,
+        required:[true,'Please confirm your password.'],
+        validate:{
+validator:function(val){
+    return val==this.password;
+}, message:"Password & Confirm Password does not match!"
+        }
+    }
 });
 
 userSchema.pre("save",async function(next){
@@ -37,6 +48,7 @@ userSchema.pre("save",async function(next){
      const saltRound=await bcrypt.genSalt(10);
      const hashpassword= await bcrypt.hash(user.password, saltRound);
      user.password=hashpassword;
+     user.confirmPassword=undefined;
      console.log({msg:user});
      next();
     }catch(error){
