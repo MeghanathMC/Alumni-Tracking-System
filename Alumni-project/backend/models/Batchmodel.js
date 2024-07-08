@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 const batchSchema= new Schema({
     year:{
         type:String,
-        required:true,
     }
 });
 

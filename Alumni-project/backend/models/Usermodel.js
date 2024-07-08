@@ -22,24 +22,13 @@ const userSchema= new mongoose.Schema({
         required:true,
         unique:true,
     },
-    mobilenumber:{
-        type:String,
-        required:true,
-    },
+    
     password:{
         type:String,
         required:[true, 'Please enter a password.'],
         minlength:8
     },
-    confirmPassword:{
-        type:String,
-        required:[true,'Please confirm your password.'],
-        validate:{
-validator:function(val){
-    return val==this.password;
-}, message:"Password & Confirm Password does not match!"
-        }
-    }
+    passwordChangedAt:Date,
 });
 
 userSchema.pre("save",async function(next){
@@ -66,9 +55,7 @@ userSchema.methods.generateToken= async function(){
     try{
     return jwt.sign({
       userId:this._id.toString(),
-      username:this.username,
-      usn:this.usn,
-      password:this.password
+
     },
     process.env.JWT_SECRET_KEY,
     {expiresIn:"1d",}
@@ -76,6 +63,18 @@ userSchema.methods.generateToken= async function(){
 }catch(error){
     console.error(error);
 }
+}
+
+
+
+userSchema.methods.isPasswordChanged= async function(JWTTimestamp){
+    if(this.passwordChangedAt){
+        const pswdChangedTimestamp=parseInt(this.passwordChangedAt.getTime()/1000,10);
+        console.log(pswdChangedTimestamp, JWTTimestamp);
+
+        return JWTTimestamp<pswdChangedTimestamp;
+    }
+    return false;
 }
 
 const usermodel=mongoose.model("usermodel",userSchema);

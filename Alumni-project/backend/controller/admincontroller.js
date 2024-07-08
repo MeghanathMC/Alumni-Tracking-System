@@ -1,6 +1,4 @@
 const usermodel=require('../models/Usermodel');
-
-const nodemailer= require('nodemailer');
 const Batchmodel = require('../models/Batchmodel');
 
 

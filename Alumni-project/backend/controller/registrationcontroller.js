@@ -1,7 +1,7 @@
 const usermodel=require('../models/Usermodel');
-const bcrypt=require('bcryptjs');
 
-const nodemailer= require('nodemailer');
+const {sendmail}= require('./mailcontroller.js');
+
 const Batchmodel = require('../models/Batchmodel');
 
 
@@ -20,14 +20,17 @@ const registerbatch = async (req,res,year) => {
 }
 const register = async (req, res) => {
     try {
-        const { username, usn,year,gmail,mobilenumber, password } = req.body;
+        const { username, usn,year,gmail, password,confirmPassword } = req.body;
         // Find the batch by year
+        if (password !== confirmPassword) {
+            return res.status(400).send({ msg: "Password and Confirm Password do not match" });
+        }
         let batchid = await Batchmodel.findOne({year:year});
      
         if (!batchid) {
            await registerbatch(year);
+           batchid = await Batchmodel.findOne({year:year});
         }
-        
         // Check if user already exists
         const existingUser = await usermodel.findOne({ usn: usn,gmail:gmail });
         if (existingUser) {
@@ -43,12 +46,12 @@ const register = async (req, res) => {
             batch,
             usn,
             gmail,
-            mobilenumber,
             password
         });
-        sendmail(username,gmail);
         await usercreated.save();
-       
+        let subject="Successfully registered";
+        let text=`Dear ${username}, u are registered with alumni website`
+        sendmail(username,gmail,subject,text);
         res.status(200).send({ msg: usercreated });
     } catch (error) {
         console.error(error);
@@ -56,32 +59,7 @@ const register = async (req, res) => {
     }
 }
 
-const sendmail=(username,gmail)=> {
-    var transport = nodemailer.createTransport({
-        service:'gmail',
-        port: 465,
-        auth: {
-          user: "alumniconnectweb@gmail.com",
-          pass: "kzjc fpga yfeh sdww"
-        }
-      });
-    
-      const mailOptions={
-        from:"alumniconnectweb@gmail.co",
-        to:`${gmail}`,
-        subject:"Successfully registered",
-        text:`Dear ${username}, u have registered with alumni website`
-      };
-    
-      transport.sendMail(mailOptions,function(error,info){
-        if(error){
-            console.log('Error:',error);
-        }else{
-            console.log('Email sent:',info.response, gmail);
-        }
-      });
-    
-}
+
 
 
 module.exports={register};
