@@ -1,127 +1,79 @@
-const usermodel=require('../models/Alumnimodel.js');
-const {sendmail} = require('./mailcontroller.js');
-const crypto=require('crypto');
-const Batchmodel = require('../models/Batchmodel');
 
-const tempUser={};
+const alumnimodel=require('../models/Alumnimodel');
+const studentmodel=require('../models/Studentmodel');
 
-const registerbatch = async (year) => {
+const login= async( req,res) => {
     try{
-     await Batchmodel.create({
-            year
-        });
-        console.log("Batch registered");
-       
-    }catch(err){
-        console.log(err);
+    const {role,gmail,password}=req.body;
+    
+    let userexist;
+    if(role==="alumni"){
+    userexist=await alumnimodel.findOne({"gmail":gmail});
+    }else{
+     userexist=   await studentmodel.findOne({"gmail":gmail});
     }
+    console.log(userexist);
+    if(!userexist){
+       return res.status(401).json({msg:"Email doesnot exist"});
+    }
+    
+    const isPassword= await userexist.comparePassword(password);
+    if(isPassword){
+        const generatedToken= await userexist.generateToken(role);
+        console.log(generatedToken);
+       
+        req.session.user={
+            id:userexist._id.toString(),
+            role:role,
+            token:generatedToken
+        };
+
+        res.status(200).json({msg:"Login successful",
+            token:generatedToken,
+        id:userexist._id.toString()});
+    }else{
+        res.status(400).json({msg:"Password incorrect"});
+    }
+}catch(error){
+ console.error(error);
+ res.status(500).json({msg:"Error occured"});
 }
 
-const generateVerificationCode = () => {
-    return crypto.randomBytes(3).toString('hex'); // Generate a 6-character hex code
+}
+
+const jwt = require('jsonwebtoken');
+
+
+const protect = async (req, res, next) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ msg: "No session found, authorization denied" });
+          }
+      
+          const { token, role } = req.session.user;
+      
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY); // Replace 'your_jwt_secret_key' with your actual secret
+        console.log(decoded);
+        let requser;
+        if(role==='alumni'){
+          requser= await alumnimodel.findById(decoded.id).select('-password');
+        }else{
+            requser=await studentmodel.findById(decoded.id).select('-password');
+        }
+        if(!requser){
+            return res.json({msg:"User with the token doesnot exists"});
+        }
+        const isPasswordChanged=await requser.isPasswordChanged(decoded.iat);
+        if(isPasswordChanged){
+            return res.json({msg:"Please login again"});
+        }
+        req.user=requser;
+        next();
+    } catch (error) {
+        console.error(error);
+        res.status(401).json({ msg: "Token is not valid" });
+    }
 };
 
-const initiatealumniregister = async (req, res,next) => {
-    try {
-        const { username, usn,year,gmail, password,confirmPassword } = req.body;
-        // Find the batch by year
-        if (password !== confirmPassword) {
-            return res.status(400).send({ msg: "Password and Confirm Password do not match" });
-        }
-        let batchid = await Batchmodel.findOne({year:year});
-        console.log(batchid);
-        if (!batchid) {
-           await registerbatch(year);
-           batchid = await Batchmodel.findOne({year:year});
-        }
-        
-        // Check if user already exists
-        const existingUser = await usermodel.findOne({ usn: usn,gmail:gmail });
-        if (existingUser) {
-            console.error({ msg: "User exists with usn or email" });
-            return res.status(400).send({ msg: "User exists" });
-        }
-        const batch=batchid._id;
-
-        const verificationCode= generateVerificationCode();
-
-
-        req.session.tempUser= {
-            username,
-            batch,
-            usn,
-            gmail,
-            password,
-            verificationCode,
-        };
-        
-        const subject="Email verification";
-        const text = `Dear ${username}, your verification code is:${verificationCode}`;
-        
-        sendmail(gmail,subject,text);
-       return res.status(200).send({ msg: "Verification code sent. Please verify your email."});
-        // Create new user
-  
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send({ msg: "Internal Server Error" });
-    }
-}
-
-const completealumniregister= async(req,res) => {
-    try {
-        const { verificationCode } = req.body;
-        const tempUser=req.session.tempUser;
- 
-        if (!tempUser) {
-            return res.status(400).json({ msg: "Session expired or user not found. Please register again." });
-        }
-
-        if (tempUser.verificationCode !== verificationCode) {
-            return res.status(400).send({ msg: "Invalid verification code" });
-        }
-
-        const usercreated = new usermodel({
-           username:tempUser.username,
-            batch:tempUser.batch,
-            usn:tempUser.usn,
-            gmail:tempUser.gmail,
-            password:tempUser.password,
-        });
-        let subject="Successfully registered";
-        let text=`Dear ${tempUser.username}, u are successfully registered as Alumni with alumni planet`
-        if(sendmail(tempUser.gmail,subject,text)){
-        await usercreated.save();
-        req.session.tempUser = null;
-
-        return res.status(200).send({ msg: usercreated });
-        }
-    } catch (error) {
-        console.error(error);
-       return res.status(500).send({ msg: "Internal Server Error" });
-    }
-}
-
-const getUsersByBatchYear = async (req, res) => {
-    try {
-        const { year } = req.body;
-
-        // Find the batch by year
-        const batch = await Batchmodel.findOne({ year });
-        if (!batch) {
-            return res.status(404).send({ msg: "Batch not found" });
-        }
-
-        // Find users by batch ID
-        const users = await usermodel.find({ batch: batch._id }).lean();
-
-        res.status(200).send({ users });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ msg: "Internal Server Error" });
-    }
-}
-
-
-
-module.exports={initiatealumniregister,completealumniregister};
+module.exports = { login, protect };
