@@ -4,11 +4,18 @@ import {IconButton} from "@mui/material";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import NightlightIcon from '@mui/icons-material/Nightlight';
+import LightModeIcon from "@mui/icons-material/LightMode";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import ConversationsItem from './ConversationsItem';
+import { useNavigate } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import { toggleTheme } from "../Features/themeSlice";
+import Conversations from "./Conversations";
 
 function Sidebar(){
+   const dispatch= useDispatch();
+    const lightTheme=useSelector((state)=> state.themeKey);
     const [conversations,setConversations]= useState([
     {
         name:"Test#1",
@@ -27,29 +34,36 @@ function Sidebar(){
     },
 
 ]);
+const navigate = useNavigate();
    return <div className="sidebar-container">
-    <div className="sb-header">
+    <div className={"sb-header" + (lightTheme ? "" :"dark")}>
         <div>
         <IconButton>
-        <AccountCircleIcon/>
+        <AccountCircleIcon className={ "icon"+(lightTheme ? "":"dark")}/>
         </IconButton>
         </div>
 
         <div>
-        <IconButton>
+        <IconButton onClick={()=>{
+            navigate('users')}}>
         <PersonAddIcon/>
         </IconButton>
 
-        <IconButton>
+        <IconButton onClick={()=>{
+            navigate('groups')}}>
         <GroupAddIcon/>
         </IconButton>
 
-        <IconButton>
+        <IconButton onClick={()=>{
+            navigate('create-groups')}}>
         <AddCircleIcon/>
         </IconButton>
 
-        <IconButton>
-        <NightlightIcon/>
+        <IconButton onClick={()=>{dispatch(toggleTheme)}}>
+            {lightTheme&&(
+        <NightlightIcon className={ "icon"+(lightTheme ? "":"dark")}/>)}
+         {!lightTheme&&(
+        <LightModeIcon className={ "icon"+(lightTheme ? "":"dark")}/>)}
         </IconButton>
         </div>
         
@@ -58,18 +72,14 @@ function Sidebar(){
         <IconButton>
         <SearchIcon/>
         </IconButton>
-        <input placeholder="search" className="search-box"/>
+        <input placeholder="search" className={"search-box "+ (lightTheme?"":" ")}/>
     </div>
-    <div className="sb-conversations">
-       {conversations.map((conversation)=>{
-      return <ConversationsItem props={conversation} key={conversation.name}/>
-
- } )}
+   <Conversations/>
 
     </div>
 
 
-   </div>;
+   
 }
 
 export default Sidebar;

@@ -6,6 +6,8 @@ import ChatArea from "./ChatArea";
 import Welcome from "./Welcome";
 import CreateGroups from "./CreateGroups";
 import Login from "./Login";
+import Users from "./Users";
+import { Outlet } from "react-router-dom";
 function MainContainer(){
     const [conversations,setConversations]= useState([
         {
@@ -26,11 +28,14 @@ function MainContainer(){
     
     ]);
     return <div className="main-container">
-   {/* <Sidebar /> */}
-   <Login/>
-   {/*<Welcome/>*/}
-   {/*<CreateGroups/>*/}
-    {/* <ChatArea props={conversations[0]} /> */}
+   <Sidebar /> 
+   <Outlet/>
+   {/* <Welcome/> */}
+   {/* <CreateGroups/> */}
+     {/* <ChatArea props={conversations[0]} /> */}
+    <Users/>
+    {/* <Groups/> */}
+    
     </div>;
 }
 
