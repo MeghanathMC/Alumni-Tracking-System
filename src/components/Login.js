@@ -47,8 +47,8 @@ import React ,{useState} from "react";
 import axios from "axios";
 const Login = () => {
   const [formData,setFormData]=useState({
-    username:"",
-    email:"",
+    role:"alumni",
+    gmail:"",
     password:""
   });
 
@@ -61,26 +61,36 @@ const Login = () => {
     });
   }
 
-  const handleSubmit = async(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      const response =await axios.post("htpps://localhost:5000/api/login",formData);
-      console.log(response.data);
+    try {
 
-    }
-    catch(error){
-      console.log(error);
-    }
+      const {gmail,password,role}=formData;
+      const response = await fetch(
+        "http://localhost:5000/alumnitracking/login",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          gmail, password,role,
+        })
+        // formData
+    });
+  }catch(err){
+    console.log(err);
   }
+}
 
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit}>
       <h2>Login</h2>
-      <input type="text" name="username" placeholder="Username" value={formData.username}
-        onChange={handleChange} required/>
-       <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+      {/* <input type="text" name="username" placeholder="Username" value={formData.username}
+        onChange={handleChange} required/> */}
+       <input type="email" name="gmail" placeholder="Email" value={formData.gmail} onChange={handleChange} required />
       <input type="password" name="password" id=""  placeholder="Password" value={formData.password} onChange={handleChange} required/>
+      <input type="hidden" name="role" value="alumni"/>
       <button type="submit">login</button>
       </form>
      
