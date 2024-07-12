@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const EmailVerification = () => {
+const StudentEmailVerification = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isVerifying = useRef(false);
@@ -21,7 +21,7 @@ const EmailVerification = () => {
       console.log("Token:", token);
 
       try {
-        const response = await fetch(`http://localhost:5000/alumnitracking/verify-email?token=${token}`, {
+        const response = await fetch(`http://localhost:5000/alumnitracking/verifystudentemail?token=${token}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -46,4 +46,4 @@ const EmailVerification = () => {
   return <div>Verifying email...</div>;
 };
 
-export default EmailVerification;
+export default StudentEmailVerification;

@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import Footer from "./components/Footer";
 import "./App.css";
 import EmailVerification from "./components/EmailVerification";
+import StudentEmailVerification from "./components/StudentEmailVerification";
 
 const App = () => {
   return (
@@ -22,6 +23,8 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/verify-email" element={<EmailVerification/>}/>
+          <Route path="/verifystudentemail" element={<StudentEmailVerification/>}/>   
+          
         </Routes>
         <Footer />
       </div>

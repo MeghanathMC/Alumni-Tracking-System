@@ -3,10 +3,13 @@ import axios from 'axios';
 
 const StudentSignup = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    username: '',
+    gmail: '',
+    usn:'',
     password: '',
+    confirmPassword:'',
     currentYear: '',
+    role:'student',
   });
 
   const handleChange = (e) => {
@@ -20,9 +23,23 @@ const StudentSignup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/student-signup', formData);
-      console.log(response.data);
-      // handle success (e.g., redirect to login page or show a success message)
+      const {username,
+        gmail, usn,password, confirmPassword,currentYear}=formData;
+      const response = await fetch('http://localhost:5000/alumnitracking/studentregister',{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          username,usn,gmail, password,confirmPassword,currentYear,
+        })
+        // formData
+    });
+    if(response.ok){
+      alert("Check your mail for verification");
+    }
+    console.log(response.data);
+     
     } catch (error) {
       console.error(error);
       // handle error (e.g., show an error message)
@@ -33,10 +50,13 @@ const StudentSignup = () => {
     <div className="signup-container">
       <form onSubmit={handleSubmit}>
         <h2>Student Sign Up</h2>
-        <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
-        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+        <input type="text" name="username" placeholder="Name" value={formData.username} onChange={handleChange} required />
+        <input type="email" name="gmail" placeholder="Email" value={formData.gmail} onChange={handleChange} required />
+        <input type="text" name="usn" placeholder="Usn" value={formData.usn} onChange={handleChange} required />
         <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
-        <input type="number" name="currentYear" placeholder="Current Year" value={formData.currentYear} onChange={handleChange} required />
+        <input type="password" name="confirmPassword" placeholder="confirm-Password" value={formData.confirmPassword} onChange={handleChange} required />
+        <input type="text" name="currentYear" placeholder="Current Year" value={formData.currentYear} onChange={handleChange} required />
+        <input type='hidden' name="role" value="student" />
         <button type="submit">Sign Up</button>
       </form>
     </div>
