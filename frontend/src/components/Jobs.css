@@ -1,0 +1,38 @@
+.jobs-page {
+  padding: 20px;
+}
+.jobs-page p {
+  /* padding: 20px; */
+  text-align: center;
+}
+
+.job-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.job-card img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.create-job-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.create-job-button:hover {
+  background-color: #555;
+}

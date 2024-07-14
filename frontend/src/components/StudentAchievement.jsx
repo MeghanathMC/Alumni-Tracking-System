@@ -8,19 +8,19 @@ const StudentAchievement = () => {
       <div className="achievements-container">
         <Achievements
           image="/path-to-student1.jpg"
-          name="John Doe"
+          name="John"
           graduationYear="2023"
           achievement="First in Class"
         />
         <Achievements
           image="/path-to-student2.jpg"
-          name="Jane Smith"
+          name=" Smith"
           graduationYear="2022"
           achievement="Best Research Paper"
         />
         <Achievements
           image="/path-to-student2.jpg"
-          name="Mark Henry"
+          name="Henry"
           graduationYear="2022"
           achievement="Topper in VTU Exams"
         />
@@ -28,7 +28,7 @@ const StudentAchievement = () => {
           image="/path-to-student2.jpg"
           name="Allen"
           graduationYear="2019"
-          achievement="Published Reasearch Paper"
+          achievement="Cracked Highest Package"
         />
         {/* Add more Achievements components as needed */}
       </div>
