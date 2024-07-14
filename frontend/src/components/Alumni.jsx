@@ -2,6 +2,7 @@ import React from "react";
 import linkedin from "../assets/linkedin.png";
 import facebook from "../assets/facebook.png";
 import website from "../assets/world-wide-web.png";
+import "./Alumni.css";
 const Alumni = () => {
   return (
     <div className="project-info-container">

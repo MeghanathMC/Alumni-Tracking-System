@@ -1,12 +1,17 @@
 import React from "react";
 import CollegePhoto from "../assets/clgphoto.jpg";
 // Import your CSS file for styling
+import "./About.css";
 
 const About = () => {
   return (
     <div className="about-container">
       <div className="about-info">
         <h2>About Our College</h2>
+        <div className="college-photo">
+          <img src={CollegePhoto} alt="College Photo" />
+        </div>
+
         <p>
           TOCE was established in the year 2000 at a prime location in
           Bengaluru, the Silicon City of India by “The Children’s Education
@@ -27,9 +32,6 @@ const About = () => {
           of exciting learning opportunities with innovative ideas for overall
           development.
         </p>
-      </div>
-      <div className="college-photo">
-        <img src={CollegePhoto} alt="College Photo" />
       </div>
     </div>
   );

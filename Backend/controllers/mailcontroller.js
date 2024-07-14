@@ -1,17 +1,17 @@
 const nodemailer=require('nodemailer');
 
-const sendmail=async(username,gmail,subject,text)=> {
+const sendmail=async(gmail,subject,text)=> {
     var transport = nodemailer.createTransport({
         service:'gmail',
         port: 465,
         auth: {
-          user: "alumniconnectweb@gmail.com",
-          pass: "kzjc fpga yfeh sdww"
+          user: process.env.email,
+          pass: process.env.pass
         }
       });
     
       const mailOptions={
-        from:"alumniconnectweb@gmail.co",
+        from:process.env.email,
         to:`${gmail}`,
         subject:`${subject}`,
         text:`${text}`
@@ -21,7 +21,7 @@ const sendmail=async(username,gmail,subject,text)=> {
         if(error){
             console.log('Error:',error);
         }else{
-            console.log('Email sent:',info.response);
+            console.log('Email sent');
         }
       });
     

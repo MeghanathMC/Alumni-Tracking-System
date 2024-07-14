@@ -1,0 +1,13 @@
+.dual-signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+}
+
+.signup-wrapper {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 10px;
+}

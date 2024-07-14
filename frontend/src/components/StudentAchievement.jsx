@@ -1,6 +1,6 @@
 import React from "react";
 import Achievements from "./Achievements"; // Assuming Achievements component is correctly implemented
-
+import "./StudentAchievement.css";
 const StudentAchievement = () => {
   return (
     <div className="achievement-section">

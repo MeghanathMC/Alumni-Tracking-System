@@ -1,5 +1,5 @@
 import React from "react";
-
+import "./Gallery.css";
 const Gallery = () => {
   const photos = [
     "/path-to-photo1.jpg",

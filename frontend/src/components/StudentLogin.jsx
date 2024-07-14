@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Login.css";
-const Login = () => {
+const StudentLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     role: "alumni",
@@ -53,7 +53,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit}>
-        <h2>Alumni Login</h2>
+        <h2>Student Login</h2>
         {/* <input type="text" name="username" placeholder="Username" value={formData.username}
         onChange={handleChange} required/> */}
         <input
@@ -73,11 +73,11 @@ const Login = () => {
           onChange={handleChange}
           required
         />
-        <input type="hidden" name="role" value="alumni" />
+        <input type="hidden" name="role" value="student" />
         <button type="submit">Login</button>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default StudentLogin;

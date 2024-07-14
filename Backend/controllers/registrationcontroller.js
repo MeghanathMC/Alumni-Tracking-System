@@ -1,11 +1,9 @@
-const usermodel = require("../models/Alumnimodel.js");
+const user = require("../models/Studentmodel.js");
 const { sendmail } = require("./mailcontroller.js");
 const crypto = require("crypto");
 const Batchmodel = require("../models/Batchmodel");
 const jwt = require("jsonwebtoken");
-
-let tempUser = {};
-
+const tempUser = {};
 const registerbatch = async (year) => {
   try {
     await Batchmodel.create({
@@ -17,26 +15,32 @@ const registerbatch = async (year) => {
   }
 };
 
-const alumniregistration = async (req, res, next) => {
+const generateVerificationCode = () => {
+  return crypto.randomBytes(3).toString("hex"); // Generate a 6-character hex code
+};
+
+const studentregistration = async (req, res, next) => {
   try {
-    const { username, year, gmail, password, confirmPassword } = req.body;
+    const { username, usn, currentYear, gmail, password, confirmPassword } =
+      req.body;
     // Find the batch by year
     if (password !== confirmPassword) {
       return res
         .status(400)
         .send({ msg: "Password and Confirm Password do not match" });
     }
+    let year = currentYear;
     let batchid = await Batchmodel.findOne({ year: year });
     console.log(batchid);
     if (!batchid) {
-      await registerbatch(year);
+      await registerbatch(currentYear);
       batchid = await Batchmodel.findOne({ year: year });
     }
 
     // Check if user already exists
-    const existingUser = await usermodel.findOne({ gmail: gmail });
+    const existingUser = await user.findOne({ usn: usn, gmail: gmail });
     if (existingUser) {
-      console.error({ msg: "User exists with email" });
+      console.error({ msg: "User exists with usn or email" });
       return res.status(400).send({ msg: "User exists" });
     }
     const batch = batchid._id;
@@ -47,23 +51,24 @@ const alumniregistration = async (req, res, next) => {
     let tempUser = {
       username,
       batch,
+      usn,
       gmail,
       password,
       verificationToken,
       verificationTokenExpires,
     };
+
     const encodedToken = jwt.sign(tempUser, "JWT_SECRET", { expiresIn: "5m" });
 
-    const verificationLink = `http://localhost:3000/verify-email?token=${encodedToken}`;
+    const verificationLink = `http://localhost:3000/verifystudentemail?token=${encodedToken}`;
+
     const subject = "Email verification";
     const text = `Dear ${username}, please verify your email by clicking on the following link: ${verificationLink}. The link will expire in 5 minutes.`;
 
-    console.log(encodedToken);
-
-    await sendmail(gmail, subject, text);
+    sendmail(gmail, subject, text);
     return res
       .status(200)
-      .send({ msg: "Verification link sent. Please verify your email." });
+      .send({ msg: "Verification code sent. Please verify your email." });
     // Create new user
   } catch (error) {
     console.error(error);
@@ -84,23 +89,21 @@ const verifyEmail = async (req, res) => {
         .json({ msg: "Invalid or expired token. Please register again." });
     }
     console.log(tempUser);
-    const usercreated = await usermodel.create({
-      gmail: tempUser.gmail,
+
+    const usercreated = new user({
       username: tempUser.username,
       batch: tempUser.batch,
-
+      usn: tempUser.usn,
+      gmail: tempUser.gmail,
       password: tempUser.password,
     });
+    await usercreated.save();
+    let subject = "Successfully registered";
+    let text = `Dear ${tempUser.username}, u are successfully registered as student with alumni website`;
+    sendmail(tempUser.gmail, subject, text);
 
-    const subject = "Successfully registered";
-    const text = `Dear ${usercreated.username}, you are successfully registered as Alumni with Alumni Planet.`;
-
-    await sendmail(usercreated.gmail, subject, text);
-
-    console.log("Alumni registered successfully");
-    res
-      .status(200)
-      .send({ msg: "Email verified and registration completed successfully" });
+    console.log("Student registered");
+    return res.status(200).send({ msg: usercreated });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ msg: "Internal Server Error" });
@@ -127,4 +130,4 @@ const getUsersByBatchYear = async (req, res) => {
   }
 };
 
-module.exports = { alumniregistration, verifyEmail };
+module.exports = { studentregistration, verifyEmail };

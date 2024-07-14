@@ -1,0 +1,11 @@
+:root {
+  --primary-color: #3d5b77; /* Dark blue-gray */
+  --accent-color: #e6e4e1; /* Orange accent */
+  --text-color: #ffffff; /* White text */
+  --hover-color: rgba(251, 169, 36, 0.8); /* Slightly transparent orange */
+  --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

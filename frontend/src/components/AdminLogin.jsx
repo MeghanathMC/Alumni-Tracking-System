@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
-const Login = () => {
+
+const AdminLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    role: "alumni",
-    gmail: "",
+    role: "admin",
+    username: "",
     password: "",
   });
 
@@ -20,20 +21,19 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { gmail, password, role } = formData;
+      const { username, password, role } = formData;
       const response = await fetch(
-        "http://localhost:5000/alumnitracking/login",
+        "http://localhost:5000/alumnitracking/admin/login",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            gmail,
+            username,
             password,
             role,
           }),
-          // formData
         }
       );
       const responsedata = await response.json();
@@ -44,7 +44,7 @@ const Login = () => {
 
       localStorage.setItem("user", JSON.stringify(userData));
 
-      navigate("/home");
+      navigate("/admin-home");
     } catch (err) {
       console.log(err);
     }
@@ -53,31 +53,28 @@ const Login = () => {
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit}>
-        <h2>Alumni Login</h2>
-        {/* <input type="text" name="username" placeholder="Username" value={formData.username}
-        onChange={handleChange} required/> */}
+        <h2>Admin Login</h2>
         <input
-          type="email"
-          name="gmail"
-          placeholder="Email"
-          value={formData.gmail}
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
           onChange={handleChange}
           required
         />
         <input
           type="password"
           name="password"
-          id=""
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
           required
         />
-        <input type="hidden" name="role" value="alumni" />
+        <input type="hidden" name="role" value="admin" />
         <button type="submit">Login</button>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default AdminLogin;

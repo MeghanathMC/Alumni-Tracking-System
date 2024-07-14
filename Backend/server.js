@@ -1,29 +1,4 @@
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const cors = require("cors");
 
-// app.use(router);
-// // app.post("/api/alumni-signup", async (req, res) => {
-// //   try {
-// //     const newAlumni = new Alumni(req.body);
-// //     await newAlumni.save();
-// //     res.status(201).send({ message: "Successfully signed up!" });
-// //   } catch (error) {
-// //     res.status(500).send({ error: "Failed to sign up" });
-// //   }
-// // });
-
-// // app.post('/api/student-signup', async (req, res) => {
-// //   try {
-// //     const newStudent = new Student(req.body);
-// //     await newStudent.save();
-// //     res.status(201).send({ message: 'Successfully signed up!' });
-// //   } catch (error) {
-// //     res.status(500).send({ error: 'Failed to sign up' });
-// //   }
-// // });
-
-//
 
 const express = require("express");
 const app = express();
