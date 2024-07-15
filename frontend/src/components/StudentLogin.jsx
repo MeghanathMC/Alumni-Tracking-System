@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
+
 const StudentLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    role: "alumni",
+    role: "student",
     gmail: "",
     password: "",
   });
@@ -33,13 +34,12 @@ const StudentLogin = () => {
             password,
             role,
           }),
-          // formData
         }
       );
       const responsedata = await response.json();
       console.log("Hiiiiiii", responsedata);
 
-      const userData = responsedata.user; // Extract the user data
+      const userData = responsedata.user;
       console.log("User data:", userData);
 
       localStorage.setItem("user", JSON.stringify(userData));
@@ -54,8 +54,6 @@ const StudentLogin = () => {
     <div className="login-container">
       <form onSubmit={handleSubmit}>
         <h2>Student Login</h2>
-        {/* <input type="text" name="username" placeholder="Username" value={formData.username}
-        onChange={handleChange} required/> */}
         <input
           type="email"
           name="gmail"
@@ -67,7 +65,6 @@ const StudentLogin = () => {
         <input
           type="password"
           name="password"
-          id=""
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}

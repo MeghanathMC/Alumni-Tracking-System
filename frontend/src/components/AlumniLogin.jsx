@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
-const Login = () => {
+
+const AlumniLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     role: "alumni",
@@ -33,18 +34,17 @@ const Login = () => {
             password,
             role,
           }),
-          // formData
         }
       );
       const responsedata = await response.json();
       console.log("Hiiiiiii", responsedata);
 
-      const userData = responsedata.user; // Extract the user data
+      const userData = responsedata.user;
       console.log("User data:", userData);
 
       localStorage.setItem("user", JSON.stringify(userData));
 
-      navigate("/home");
+      navigate("/alumni-home");
     } catch (err) {
       console.log(err);
     }
@@ -54,8 +54,6 @@ const Login = () => {
     <div className="login-container">
       <form onSubmit={handleSubmit}>
         <h2>Alumni Login</h2>
-        {/* <input type="text" name="username" placeholder="Username" value={formData.username}
-        onChange={handleChange} required/> */}
         <input
           type="email"
           name="gmail"
@@ -67,7 +65,6 @@ const Login = () => {
         <input
           type="password"
           name="password"
-          id=""
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
@@ -80,4 +77,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AlumniLogin;

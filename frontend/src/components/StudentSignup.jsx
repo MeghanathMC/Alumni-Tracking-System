@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./SignupForm.css"; // Add this CSS file for common styles
 
 const StudentSignup = () => {
   const [formData, setFormData] = useState({
@@ -39,7 +40,6 @@ const StudentSignup = () => {
             confirmPassword,
             currentYear,
           }),
-          // formData
         }
       );
       if (response.ok) {
@@ -48,7 +48,6 @@ const StudentSignup = () => {
       console.log(response.data);
     } catch (error) {
       console.error(error);
-      // handle error (e.g., show an error message)
     }
   };
 

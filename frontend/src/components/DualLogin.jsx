@@ -1,20 +1,38 @@
-import React from "react";
-import Login from "./Login";
+import React, { useState } from "react";
 import AdminLogin from "./AdminLogin";
 import StudentLogin from "./StudentLogin";
+import AlumniLogin from "./AlumniLogin";
 import "./DualLogin.css";
 
 const DualLogin = () => {
+  const [activeForm, setActiveForm] = useState("student");
+
   return (
     <div className="dual-login-container">
-      <div className="login-wrapper">
-        <StudentLogin />
+      <div className="toggle-buttons">
+        <button
+          className={`toggle-button ${activeForm === "student" ? "active" : ""}`}
+          onClick={() => setActiveForm("student")}
+        >
+          Student
+        </button>
+        <button
+          className={`toggle-button ${activeForm === "alumni" ? "active" : ""}`}
+          onClick={() => setActiveForm("alumni")}
+        >
+          Alumni
+        </button>
+        <button
+          className={`toggle-button ${activeForm === "admin" ? "active" : ""}`}
+          onClick={() => setActiveForm("admin")}
+        >
+          Admin
+        </button>
       </div>
       <div className="login-wrapper">
-        <Login />
-      </div>
-      <div className="login-wrapper">
-        <AdminLogin />
+        {activeForm === "student" && <StudentLogin />}
+        {activeForm === "alumni" && <AlumniLogin />}
+        {activeForm === "admin" && <AdminLogin />}
       </div>
     </div>
   );

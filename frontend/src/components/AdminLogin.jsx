@@ -39,7 +39,7 @@ const AdminLogin = () => {
       const responsedata = await response.json();
       console.log("Hiiiiiii", responsedata);
 
-      const userData = responsedata.user; // Extract the user data
+      const userData = responsedata.user;
       console.log("User data:", userData);
 
       localStorage.setItem("user", JSON.stringify(userData));

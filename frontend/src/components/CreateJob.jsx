@@ -89,7 +89,7 @@ const CreateJob = () => {
           />
         </label>
         <label>
-          Description:
+          Job Description:
           <textarea
             name="description"
             value={formData.description}

@@ -11,7 +11,7 @@ const Navbar = () => {
     if (currentTheme === "dark") {
       setIsDarkTheme(true);
       document.body.classList.add("dark-theme");
-    } else {
+    } else {  
       setIsDarkTheme(false);
       document.body.classList.remove("dark-theme");
     }
